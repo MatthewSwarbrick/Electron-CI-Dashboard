@@ -1,5 +1,8 @@
 {
     "name": "ci-dashboard",
     "version": "0.1.0",
-    "main": "main.js"
+    "main": "main.js",
+    "dependencies": {
+        "bootstrap": "^3.3.7"
+    }
 }
