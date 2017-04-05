@@ -1,11 +1,13 @@
-const {app, BrowserWindow} = require('electron')
+const { app, BrowserWindow } = require('electron')
 const path = require('path')
 const url = require('url')
 
 let win
 
 function createWindow () {
-  win = new BrowserWindow({width: 800, height: 600, resizable: false})
+  win = new BrowserWindow({width: 800, height: 600, resizable: false});
+
+  // win.webContents.toggleDevTools();
 
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
@@ -16,8 +18,6 @@ function createWindow () {
   win.on('closed', () => {
     win = null
   })
-
-  win.webContents.toggleDevTools();
 }
 
 app.on('ready', createWindow)

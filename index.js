@@ -1,13 +1,11 @@
 const TfsSettings = require("./tfsSettings.js");
-const { remote } = require('electron');
+const remote  = require('electron').remote;
+const path = require('path')
+const url = require('url')
 
 if(TfsSettings.getTfsUrl())
 {
-    remote.getCurrentWindow().loadURL(url.format({
-        pathname: path.join(__dirname, 'projects.html'),
-        protocol: 'file:',
-        slashes: true
-    }))
+    navigationToProjects();
 }
 
 var submitTfsButton = document.getElementById("enterTfsUrlButton");
@@ -19,4 +17,14 @@ submitTfsButton.addEventListener("click", () => {
     }
 
     TfsSettings.storeTfsUrl(tfsUrl);
+    navigationToProjects();
 });
+
+function navigationToProjects() {
+    debugger;
+    remote.getCurrentWindow().loadURL(url.format({
+        pathname: path.join(__dirname, 'projects.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+}
