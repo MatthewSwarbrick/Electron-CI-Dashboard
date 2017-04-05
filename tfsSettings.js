@@ -1,8 +1,11 @@
 var TfsSettings =  (function() {
     return {
         storeTfsUrl: function (url) {
-            console.log("storing url");
             sessionStorage.setItem("tfsUrl", url);
+        },
+
+        getTfsUrl: function() {
+            return sessionStorage.getItem("tfsUrl");
         }
     }
 })();
