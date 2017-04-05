@@ -1,0 +1,40 @@
+.home-logo {
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.welcome-text {
+    text-align: center;
+}
+
+.input-addon-button {
+    background-color: #68217A;
+    color: #fff;
+    border-color: #68217A;
+}
+
+.input-addon-button:hover {
+    background-color: #fff;
+    color: #68217A;
+}
+
+.input-tfs-url {
+    margin-top: 10%;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+.input-tfs-url input:focus {
+    border-color: #68217A;
+}
+
+h1 {
+    color: #68217A;
+}
+
+
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

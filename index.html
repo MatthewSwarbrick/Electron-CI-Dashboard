@@ -3,13 +3,20 @@
   <head>
     <meta charset="UTF-8">
     <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/site.css" rel="stylesheet">
     
-    <title>CI Dashboard</title>
+    <title>TFS CI Dashboard</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <div>
+      <img class="home-logo" src="content/images/vslogo.png"></img>
+      <h1 class="welcome-text">Welcome to the TFS CI dashboard</h1>
+    </div>
+    <div class="input-group input-tfs-url">
+      <input type="text" class="form-control" placeholder="Enter the tfs server url here">
+      <span class="input-group-btn">
+        <button class="btn btn-default input-addon-button" type="button">Go!</button>
+      </span>
+    </div>
   </body>
 </html>
