@@ -5,10 +5,9 @@ const url = require('url')
 let win
 
 function createWindow () {
-  win = new BrowserWindow({width: 800, height: 600, resizable: false});
+  win = new BrowserWindow({width: 1000, height: 800, resizable: false});
 
-  win.webContents.toggleDevTools();
-  // session.defaultSession.allowNTLMCredentialsForDomains('*');
+  // win.webContents.toggleDevTools();
 
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),

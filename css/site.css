@@ -29,6 +29,22 @@
     border-color: #68217A;
 }
 
+.project {
+    padding: 10px;
+}
+
+.header {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin: 0;
+}
+
+#project-list {
+    margin: 0;
+}
+
 h1 {
     color: #68217A;
 }
