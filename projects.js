@@ -1,5 +1,8 @@
 const TfsApi = require("./tfsApi");
 const moment = require("moment");
+const remote  = require('electron').remote;
+const path = require('path');
+const url = require('url');
 
 var projects = [];
 
@@ -29,13 +32,23 @@ function setProjectsToView() {
 function setSettingsButton() {
     var tfsUrl = localStorage.getItem("tfsUrl");
     var html = `
-        <span>${tfsUrl}</span>[<a href="#">change</a>]
+        <span>${tfsUrl}</span>[<a id="change-settings-link" href="#">change</a>]
     `;
     var settingsButton = document.getElementById("settings-button");
     settingsButton.innerHTML = html;
 }
 
 this.setSettingsButton();
+
+var settingsButton = document.getElementById("change-settings-link");
+settingsButton.addEventListener("click", () => {
+    localStorage.removeItem("tfsUrl");
+    remote.getCurrentWindow().loadURL(url.format({
+        pathname: path.join(__dirname, 'index.html'),
+        protocol: 'file:',
+        slashes: true
+    }));
+});
 
 var tfsApiCall = TfsApi.getTfsProjects();
 tfsApiCall
