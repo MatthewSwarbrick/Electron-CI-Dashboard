@@ -53,6 +53,8 @@ tfsApiCall
                             requestedFor: json.value[0].requestedFor.displayName,
                             time: json.value[0].queueTime
                         });
+                        
+                        this.setProjectsToView();
                     }
                     else
                     {
@@ -67,12 +69,13 @@ tfsApiCall
                                     requestedFor: json.value[0].requestedFor.displayName,
                                     time: json.value[0].queueTime
                                 });
+                                
+                                this.setProjectsToView();
                             }
                         });
                     }
                 })
         });
-        this.setProjectsToView();
     });
 
 tfsApiCall.catch(() => this.setProjectsToView());
