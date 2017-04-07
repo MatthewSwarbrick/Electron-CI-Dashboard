@@ -58,3 +58,13 @@ h1 {
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+@keyframes fadeInOut {
+  0%   { opacity:1; }
+  50%  { opacity:0.2; }
+  100% { opacity:1; }
+}
+
+.building-card {
+    animation: fadeInOut 3s infinite;
+}

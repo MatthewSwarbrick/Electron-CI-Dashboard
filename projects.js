@@ -8,7 +8,7 @@ var projects = [];
 
 var projectHTML = (project) => `
     <div class="project col-sm-4">
-        <div class="card card-inverse ${project.status == 'building' ? 'card-warning' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
+        <div class="card card-inverse ${project.status == 'building' ? 'card-warning building-card' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
             <div class="card-header">${project.name} | ${project.status}</div>
             <div class="card-block">
                 <p class="card-text">Started by: ${project.requestedFor}</p>
