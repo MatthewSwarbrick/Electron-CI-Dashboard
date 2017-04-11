@@ -24,8 +24,9 @@ function setLastUpdatedToView() {
 };
 
 function setProjectsToView() {
+    var orderedProjects = this.projects.sort(this.compare);
     if(this.projects.some(p => p)) {
-        var html = this.projects.map(projectHTML).join('');
+        var html = orderedProjects.map(projectHTML).join('');
         var projectList = document.getElementById("project-list");
         projectList.innerHTML = html;
         return;
@@ -46,7 +47,15 @@ function setSettingsButton() {
 
 function isProjectBuildOlderThanAYear(queueTime) {
     return moment.duration(moment().diff(moment(queueTime))).asYears() > 1;
-}
+};
+
+function compare(a, b) {
+  if (a.name.toLowerCase() < b.name.toLowerCase())
+    return -1;
+  if (a.name.toLowerCase() > b.name.toLowerCase())
+    return 1;
+  return 0;
+};
 
 this.setSettingsButton();
 
@@ -112,4 +121,4 @@ function getProjects() {
 }
 
 this.getProjects();
-setTimeout(this.getProjects, 60000);
+setInterval(this.getProjects, 30000);
