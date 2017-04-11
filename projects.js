@@ -60,8 +60,10 @@ settingsButton.addEventListener("click", () => {
     }));
 });
 
-var tfsApiCall = TfsApi.getTfsProjects();
-tfsApiCall
+function getProjects() {
+    this.projects = [];
+    var tfsApiCall = TfsApi.getTfsProjects();
+    tfsApiCall
     .then(response => response.json())
     .then(json => {
         json.value.forEach(function(project) {
@@ -106,5 +108,8 @@ tfsApiCall
                 })
         });
     });
+    tfsApiCall.catch(() => this.setProjectsToView());
+}
 
-tfsApiCall.catch(() => this.setProjectsToView());
+this.getProjects();
+setTimeout(this.getProjects, 60000);
