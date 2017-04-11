@@ -17,6 +17,12 @@ var projectHTML = (project) => `
         </div>
     </div>`;
 
+function setLastUpdatedToView() {
+    var element = document.getElementById("last-updated-text");
+    var lastUpdatedText = `Last updated at: ${moment().format("DD MMM HH:mm")}`;
+    element.innerHTML = lastUpdatedText;
+};
+
 function setProjectsToView() {
     if(this.projects.some(p => p)) {
         var html = this.projects.map(projectHTML).join('');
@@ -36,6 +42,10 @@ function setSettingsButton() {
     `;
     var settingsButton = document.getElementById("settings-button");
     settingsButton.innerHTML = html;
+};
+
+function isProjectBuildOlderThanAYear(queueTime) {
+    return moment.duration(moment().diff(moment(queueTime))).asYears() > 1;
 }
 
 this.setSettingsButton();
@@ -60,14 +70,17 @@ tfsApiCall
                 .then(json => {
                     if(json.count != 0)
                     {
-                        this.projects.push({
-                            name: project.name,
-                            status: "building",
-                            requestedFor: json.value[0].requestedFor.displayName,
-                            time: json.value[0].queueTime
-                        });
-                        
-                        this.setProjectsToView();
+                        if(!this.isProjectBuildOlderThanAYear(json.value[0].queueTime)) {
+                            this.projects.push({
+                                name: project.name,
+                                status: "building",
+                                requestedFor: json.value[0].requestedFor.displayName,
+                                time: json.value[0].queueTime
+                            });
+                            
+                            this.setProjectsToView();
+                            this.setLastUpdatedToView();
+                        }
                     }
                     else
                     {
@@ -76,14 +89,17 @@ tfsApiCall
                         .then(json => {
                             if(json.count != 0)
                             {
-                                this.projects.push({
-                                    name: project.name,
-                                    status: json.value[0].result,
-                                    requestedFor: json.value[0].requestedFor.displayName,
-                                    time: json.value[0].queueTime
-                                });
-                                
-                                this.setProjectsToView();
+                                if(!this.isProjectBuildOlderThanAYear(json.value[0].queueTime)) {
+                                    this.projects.push({
+                                        name: project.name,
+                                        status: json.value[0].result,
+                                        requestedFor: json.value[0].requestedFor.displayName,
+                                        time: json.value[0].queueTime
+                                    });
+                                    
+                                    this.setProjectsToView();
+                                    this.setLastUpdatedToView();
+                                }
                             }
                         });
                     }

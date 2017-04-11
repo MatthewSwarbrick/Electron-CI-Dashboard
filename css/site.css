@@ -43,6 +43,10 @@
     margin: 0;
 }
 
+.last-updated-text{
+    margin-right:10px;
+}
+
 .body-content {
     margin-top: 130px;
 }
@@ -61,10 +65,10 @@ body {
 
 @keyframes fadeInOut {
   0%   { opacity:1; }
-  50%  { opacity:0.2; }
+  50%  { opacity:0.5; }
   100% { opacity:1; }
 }
 
 .building-card {
-    animation: fadeInOut 3s infinite;
+    animation: fadeInOut 2s infinite;
 }
