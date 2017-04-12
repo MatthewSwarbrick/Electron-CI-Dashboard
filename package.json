@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "main": "main.js",
     "dependencies": {
-        "bootstrap": "4.0.0-aplha.6",
+        "bootstrap": "4.0.0-alpha.6",
         "moment": "^2.18.1"
     }
 }

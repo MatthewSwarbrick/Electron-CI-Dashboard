@@ -9,7 +9,7 @@ var projects = [];
 var projectHTML = (project) => `
     <div class="project col-sm-4">
         <div class="card card-inverse ${project.status == 'building' ? 'card-warning building-card' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
-            <div class="card-header">${project.name} | ${project.status}</div>
+            <div class="card-header">${project.name}</div>
             <div class="card-block">
                 <p class="card-text">Started by: ${project.requestedFor}</p>
                 <p class="card-text">${moment(project.time).format("YYYY-MM-DD HH:mm")}</p>
@@ -76,34 +76,19 @@ function getProjects() {
     .then(response => response.json())
     .then(json => {
         json.value.forEach(function(project) {
-            TfsApi.getQueuedBuildFromProject(project.name)
+            TfsApi.getBuildDefinitionsForProject(project.name)
                 .then(response => response.json())
                 .then(json => {
-                    if(json.count != 0)
-                    {
-                        if(!this.isProjectBuildOlderThanAYear(json.value[0].queueTime)) {
-                            this.projects.push({
-                                name: project.name,
-                                status: "building",
-                                requestedFor: json.value[0].requestedFor.displayName,
-                                time: json.value[0].queueTime
-                            });
-                            
-                            this.setProjectsToView();
-                            this.setLastUpdatedToView();
-                        }
-                    }
-                    else
-                    {
-                        return TfsApi.getLatestBuildFromProject(project.name)
-                        .then(response => response.json())
-                        .then(json => {
+                    json.value.forEach(function(definition) {
+                        TfsApi.getQueuedBuildFromProject(project.name, definition.id)
+                         .then(response => response.json())
+                         .then(json => {
                             if(json.count != 0)
                             {
                                 if(!this.isProjectBuildOlderThanAYear(json.value[0].queueTime)) {
                                     this.projects.push({
-                                        name: project.name,
-                                        status: json.value[0].result,
+                                        name: `${project.name} | ${definition.name}`,
+                                        status: "building",
                                         requestedFor: json.value[0].requestedFor.displayName,
                                         time: json.value[0].queueTime
                                     });
@@ -112,10 +97,31 @@ function getProjects() {
                                     this.setLastUpdatedToView();
                                 }
                             }
+                            else
+                            {
+                                return TfsApi.getLatestBuildFromProject(project.name, definition.id)
+                                .then(response => response.json())
+                                .then(json => {
+                                    if(json.count != 0)
+                                    {
+                                        if(!this.isProjectBuildOlderThanAYear(json.value[0].queueTime)) {
+                                            this.projects.push({
+                                                name: `${project.name} | ${definition.name}`,
+                                                status: json.value[0].result,
+                                                requestedFor: json.value[0].requestedFor.displayName,
+                                                time: json.value[0].queueTime
+                                            });
+                                            
+                                            this.setProjectsToView();
+                                            this.setLastUpdatedToView();
+                                        }
+                                    }
+                                });
+                            }
                         });
-                    }
-                })
-        });
+                    });
+                });
+            });
     });
     tfsApiCall.catch(() => this.setProjectsToView());
 }
