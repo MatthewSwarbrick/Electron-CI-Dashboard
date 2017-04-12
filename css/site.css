@@ -43,12 +43,17 @@
     margin: 0;
 }
 
-.last-updated-text{
+.build-summary {
+    margin-left:10px;
     margin-right:10px;
 }
 
 .body-content {
     margin-top: 130px;
+}
+
+.no-padding {
+    padding: 0 !important;
 }
 
 #project-list {

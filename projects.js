@@ -25,7 +25,6 @@ function setLastUpdatedToView() {
 };
 
 function setProjectsToView() {
-    
     if(this.projects.some(p => p)) {
         var orderedProjects = this.projects.sort(this.compare);
         orderedProjects.forEach(op => {
@@ -40,20 +39,34 @@ function setProjectsToView() {
             }
         });
 
+        this.setBuildSummaries();
         return;
     }
 
     var projectList = document.getElementById("project-list");
     projectList.innerHTML = `<p class="text-center col-md-12">There are no projects to display</p>`;
+    this.setBuildSummaries();
 };
+
+function setBuildSummaries() {
+    var successfulBuildCount = this.projects.filter(p => p.status == "succeeded").length;
+    var queuedBuildCount = this.projects.filter(p => p.status == "building").length;
+    var failedBuildCount = this.projects.filter(p => p.status == "failed" || p.status == "canceled").length;
+
+    var buildSummaryElement = document.getElementById("build-summary-text");
+    buildSummaryElement.innerHTML = `
+        <span class="badge badge-success">${successfulBuildCount} successful build${successfulBuildCount != 1 ? 's': ''}</span>
+        <span class="badge badge-warning">${queuedBuildCount} building</span>
+        <span class="badge badge-danger">${failedBuildCount} failed build${failedBuildCount != 1 ? 's': ''}</span>
+    `;
+}
 
 function setSettingsButton() {
     var tfsUrl = localStorage.getItem("tfsUrl");
-    var html = `
+    var settingsButton = document.getElementById("settings-button");
+    settingsButton.innerHTML = `
         <span>${tfsUrl}</span>[<a id="change-settings-link" href="#">change</a>]
     `;
-    var settingsButton = document.getElementById("settings-button");
-    settingsButton.innerHTML = html;
 };
 
 function isProjectBuildOlderThanAYear(queueTime) {
