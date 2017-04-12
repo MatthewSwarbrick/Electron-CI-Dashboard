@@ -3,11 +3,12 @@ const moment = require("moment");
 const remote  = require('electron').remote;
 const path = require('path');
 const url = require('url');
+const Q = require("Q");
 
 var projects = [];
 
 var projectHTML = (project) => `
-    <div class="project col-sm-4">
+    <div id="${project.name}" class="project col-sm-4">
         <div class="card card-inverse ${project.status == 'building' ? 'card-warning building-card' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
             <div class="card-header">${project.name}</div>
             <div class="card-block">
@@ -24,11 +25,21 @@ function setLastUpdatedToView() {
 };
 
 function setProjectsToView() {
-    var orderedProjects = this.projects.sort(this.compare);
+    
     if(this.projects.some(p => p)) {
-        var html = orderedProjects.map(projectHTML).join('');
-        var projectList = document.getElementById("project-list");
-        projectList.innerHTML = html;
+        var orderedProjects = this.projects.sort(this.compare);
+        orderedProjects.forEach(op => {
+            var existingProjectElement = document.getElementById(op.name);
+            if(existingProjectElement) {
+                existingProjectElement.parentNode.replaceChild(document.createRange().createContextualFragment(projectHTML(op)), existingProjectElement);
+            }
+            else {
+                
+            var projectList = document.getElementById("project-list");
+                projectList.appendChild(document.createRange().createContextualFragment(projectHTML(op)));
+            }
+        });
+
         return;
     }
 
@@ -71,15 +82,19 @@ settingsButton.addEventListener("click", () => {
 
 function getProjects() {
     this.projects = [];
+    var parentPromises = [];
+    var childPromises = [];
     var tfsApiCall = TfsApi.getTfsProjects();
     tfsApiCall
     .then(response => response.json())
     .then(json => {
         json.value.forEach(function(project) {
+            var parentDeferred = Q.defer();
             TfsApi.getBuildDefinitionsForProject(project.name)
                 .then(response => response.json())
                 .then(json => {
                     json.value.forEach(function(definition) {
+                        var deferred = Q.defer();
                         TfsApi.getQueuedBuildFromProject(project.name, definition.id)
                          .then(response => response.json())
                          .then(json => {
@@ -92,10 +107,8 @@ function getProjects() {
                                         requestedFor: json.value[0].requestedFor.displayName,
                                         time: json.value[0].queueTime
                                     });
-                                    
-                                    this.setProjectsToView();
-                                    this.setLastUpdatedToView();
                                 }
+                                deferred.resolve();
                             }
                             else
                             {
@@ -111,18 +124,29 @@ function getProjects() {
                                                 requestedFor: json.value[0].requestedFor.displayName,
                                                 time: json.value[0].queueTime
                                             });
-                                            
-                                            this.setProjectsToView();
-                                            this.setLastUpdatedToView();
                                         }
                                     }
+                                    deferred.resolve();
                                 });
                             }
                         });
+                        childPromises.push(deferred.promise);
                     });
+                    parentDeferred.resolve();
                 });
+                
+            parentPromises.push(parentDeferred.promise);
+        });
+    })
+    .then(() => {
+        Q.all(parentPromises).then(() => {
+            Q.all(childPromises).then(() => {
+                this.setProjectsToView();
+                this.setLastUpdatedToView();
             });
+        });
     });
+
     tfsApiCall.catch(() => this.setProjectsToView());
 }
 
