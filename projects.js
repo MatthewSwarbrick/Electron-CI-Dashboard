@@ -4,6 +4,7 @@ const remote  = require('electron').remote;
 const path = require('path');
 const url = require('url');
 const Q = require("Q");
+const NProgress = require("nprogress");
 
 var projects = [];
 
@@ -22,6 +23,7 @@ function setLastUpdatedToView() {
     var element = document.getElementById("last-updated-text");
     var lastUpdatedText = `Last updated at: ${moment().format("DD MMM HH:mm")}`;
     element.innerHTML = lastUpdatedText;
+    NProgress.done();
 };
 
 function setProjectsToView() {
@@ -94,6 +96,7 @@ settingsButton.addEventListener("click", () => {
 });
 
 function getProjects() {
+    NProgress.start();
     this.projects = [];
     var parentPromises = [];
     var childPromises = [];

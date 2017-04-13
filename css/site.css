@@ -36,11 +36,15 @@
 }
 
 .header {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 10px;
+    padding-right: 30px;
     padding-top: 10px;
     padding-bottom: 10px;
     margin: 0;
+}
+
+.header-title {
+    padding: 0;
 }
 
 .build-summary {
@@ -76,4 +80,17 @@ body {
 
 .building-card {
     animation: fadeInOut 2s infinite;
+}
+
+#nprogress .bar {
+    background: #68217A;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #68217A, 0 0 5px #68217A;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #68217A;
+  border-left-color: #68217A;
 }
