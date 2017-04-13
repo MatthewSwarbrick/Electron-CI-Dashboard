@@ -60,6 +60,27 @@
     padding: 0 !important;
 }
 
+.build-details-link {
+    color: #fff;
+    text-decoration: none;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+}
+
+.build-details-link:hover{
+    color: #fff;
+    text-decoration: none;
+}
+
+.build-details-link:focus{
+    color: #fff;
+    text-decoration: none;
+}
+
 #project-list {
     margin: 0;
 }

@@ -1,23 +1,28 @@
 const TfsApi = require("./tfsApi");
 const moment = require("moment");
 const remote  = require('electron').remote;
+const shell = require('electron').shell;
 const path = require('path');
 const url = require('url');
 const Q = require("Q");
 const NProgress = require("nprogress");
+const $ = require("jquery");
 
 var projects = [];
 
 var projectHTML = (project) => `
-    <div id="${project.name}" class="project col-sm-4">
-        <div class="card card-inverse ${project.status == 'building' ? 'card-warning building-card' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
-            <div class="card-header">${project.name}</div>
-            <div class="card-block">
-                <p class="card-text">Started by: ${project.requestedFor}</p>
-                <p class="card-text">${moment(project.time).format("YYYY-MM-DD HH:mm")}</p>
+        <div id="${project.name}" class="project col-sm-4">
+            <div class="card card-inverse ${project.status == 'building' ? 'card-warning building-card' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
+                <div class="card-header">${project.name}</div>
+                <div class="card-block">
+                    <p class="card-text">Started by: ${project.requestedFor}</p>
+                    <p class="card-text">${moment(project.time).format("YYYY-MM-DD HH:mm")}</p>
+                    <a class="build-details-link" href="${project.link}">
+                        <span>View details <i class="fa fa-eye"></i><span>
+                    </a>
+                </div>
             </div>
-        </div>
-    </div>`;
+        </div>`;
 
 function setLastUpdatedToView() {
     var element = document.getElementById("last-updated-text");
@@ -136,7 +141,8 @@ function getProjects() {
                                         name: `${project.name} | ${definition.name}`,
                                         status: "building",
                                         requestedFor: json.value[0].requestedFor.displayName,
-                                        time: json.value[0].queueTime
+                                        time: json.value[0].queueTime,
+                                        link: json.value[0]._links.web.href
                                     });
                                 }
                                 deferred.resolve();
@@ -153,7 +159,8 @@ function getProjects() {
                                                 name: `${project.name} | ${definition.name}`,
                                                 status: json.value[0].result,
                                                 requestedFor: json.value[0].requestedFor.displayName,
-                                                time: json.value[0].queueTime
+                                                time: json.value[0].queueTime,
+                                                link: json.value[0]._links.web.href
                                             });
                                         }
                                     }
@@ -183,3 +190,9 @@ function getProjects() {
 
 this.getProjects();
 setInterval(this.getProjects, 30000);
+
+$(document).on('click', 'a[href^="http"]', function(event) {
+        event.preventDefault();
+        shell.openExternal(this.href);
+    }
+);
