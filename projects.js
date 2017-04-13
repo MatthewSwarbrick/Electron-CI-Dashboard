@@ -7,8 +7,10 @@ const url = require('url');
 const Q = require("Q");
 const NProgress = require("nprogress");
 const $ = require("jquery");
+const Notifier = require("./notifier");
 
 var projects = [];
+var previousBuildStatuses = [];
 
 var projectHTML = (project) => `
         <div id="${project.name}" class="project col-sm-4">
@@ -34,6 +36,7 @@ function setLastUpdatedToView() {
 function setProjectsToView() {
     if(this.projects.some(p => p)) {
         var orderedProjects = this.projects.sort(this.compare);
+
         orderedProjects.forEach(op => {
             var existingProjectElement = document.getElementById(op.name);
             if(existingProjectElement) {
@@ -44,15 +47,22 @@ function setProjectsToView() {
             var projectList = document.getElementById("project-list");
                 projectList.appendChild(document.createRange().createContextualFragment(projectHTML(op)));
             }
+
+            var previousStatus = this.previousBuildStatuses.find(s => s.name == op.name);
+            if(previousStatus && previousStatus.status != op.status) {
+                Notifier.notify(op);
+            }
         });
 
         this.setBuildSummaries();
+        this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
         return;
     }
 
     var projectList = document.getElementById("project-list");
     projectList.innerHTML = `<p class="text-center col-md-12">There are no projects to display</p>`;
     this.setBuildSummaries();
+    this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
 };
 
 function setBuildSummaries() {
