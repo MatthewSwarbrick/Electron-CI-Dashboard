@@ -78,10 +78,17 @@ function setSettingsButton() {
 
 function setLoadingOverlay() {
     NProgress.start();
+    var overlayContainer = document.getElementById("loading-container");
+    overlayContainer.innerHTML = `
+        <div class="faded-overlay"></div>
+    `;
+
 }
 
 function removeLoadingOverlay() {
     NProgress.done();
+    var overlayContainer = document.getElementById("loading-container");
+    overlayContainer.innerHTML = "";
 }
 
 function isProjectBuildOlderThanAYear(queueTime) {
