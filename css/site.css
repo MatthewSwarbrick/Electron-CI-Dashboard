@@ -36,19 +36,28 @@
 }
 
 .header {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 10px;
+    padding-right: 30px;
     padding-top: 10px;
     padding-bottom: 10px;
     margin: 0;
 }
 
-.last-updated-text{
+.header-title {
+    padding: 0;
+}
+
+.build-summary {
+    margin-left:10px;
     margin-right:10px;
 }
 
 .body-content {
     margin-top: 130px;
+}
+
+.no-padding {
+    padding: 0 !important;
 }
 
 #project-list {
@@ -71,4 +80,52 @@ body {
 
 .building-card {
     animation: fadeInOut 2s infinite;
+}
+
+#nprogress .bar {
+    background: #68217A;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #68217A, 0 0 5px #68217A;
+}
+
+#nprogress .spinner-icon {
+  border-top-color: #68217A;
+  border-left-color: #68217A;
+}
+
+.faded-overlay {
+    opacity:0.5;
+    filter: alpha(opacity=20);
+    background-color:#fff; 
+    width:100%; 
+    height:100%; 
+    z-index:10;
+    top:0; 
+    left:0; 
+    position:fixed; 
+}
+
+@keyframes loading-spinner {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+ 
+.loading-spinner {
+    display: block;
+    position: fixed;
+    z-index: 1031;
+    top: 340px;
+    left: 440px;
+    width: 60px;
+    height: 60px;
+    box-sizing: border-box;
+
+    border: solid 2px transparent;
+    border-top-color: #68217A;
+    border-left-color: #68217A;
+    border-radius: 50%;
+
+    animation: loading-spinner 400ms linear infinite;
 }

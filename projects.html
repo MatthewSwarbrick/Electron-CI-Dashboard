@@ -3,18 +3,23 @@
   <head>
     <meta charset="UTF-8">
     <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="node_modules/nprogress/nprogress.css" rel="stylesheet"/>
     <link href="css/site.css" rel="stylesheet">
     <title>TFS CI Dashboard | Your projects</title>
   </head>
   <body>
+    <div id="loading-container">
+    </div>
     <div class="header row">
-        <h1 class="col-sm-6">Your projects</h1>
+        <h1 class="col-sm-6 header-title">Your projects</h1>
         <div id="settings-button" class="col-sm-6 pull-right text-right">
         </div>
     </div>
     <hr />
-    <div class="last-updated-text">
-      <p id="last-updated-text" class="pull-right text-right"></p>
+    <div class="build-summary row">
+      <div id="build-summary-text" class="col-sm-6 no-padding">
+      </div>
+      <span id="last-updated-text" class="pull-right text-right col-sm-6 no-padding"></span>
     </div>
     <div id="project-list" class="row">
     </div>
