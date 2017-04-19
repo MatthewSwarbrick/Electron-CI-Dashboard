@@ -15,7 +15,10 @@ var previousBuildStatuses = [];
 var projectHTML = (project) => `
         <div id="${project.name}" class="project col-sm-4">
             <div class="card card-inverse ${project.status == 'building' ? 'card-warning building-card' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
-                <div class="card-header">${project.name}</div>
+                <div class="card-header">
+                    <span>${project.name}</span>
+                    <i id="${project.name}-close" class="fa fa-close project-close-icon"></i>
+                </div>
                 <div class="card-block">
                     <p class="card-text">Started by: ${project.requestedFor}</p>
                     <p class="card-text">${moment(project.time).format("YYYY-MM-DD HH:mm")}</p>
