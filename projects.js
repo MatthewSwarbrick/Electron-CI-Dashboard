@@ -1,4 +1,5 @@
 const TfsApi = require("./tfsApi");
+const TfsSettings = require("./tfsSettings");
 const moment = require("moment");
 const remote  = require('electron').remote;
 const shell = require('electron').shell;
@@ -64,6 +65,7 @@ function setProjectsToView() {
 
         this.setBuildSummaries();
         this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
+        this.subscribeToHideProjectButtonClickEvents();
         return;
     }
 
@@ -86,6 +88,16 @@ function setBuildSummaries() {
     `;
 }
 
+function subscribeToHideProjectButtonClickEvents() {
+    this.projects.forEach(p => {
+        var closeButtonForProject = document.getElementById(`${p.name}-close`);
+        closeButtonForProject.addEventListener('click', event => {
+            event.preventDefault();
+            TfsSettings.addProjectToIgnore(p.name);
+        });
+    });
+}
+
 function setSettingsButton() {
     var tfsUrl = localStorage.getItem("tfsUrl");
     var settingsButton = document.getElementById("settings-button");
@@ -100,7 +112,6 @@ function setLoadingOverlay() {
     overlayContainer.innerHTML = `
         <div class="faded-overlay"></div>
     `;
-
 }
 
 function removeLoadingOverlay() {
