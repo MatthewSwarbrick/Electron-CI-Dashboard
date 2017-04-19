@@ -34,6 +34,11 @@ function setLastUpdatedToView() {
 };
 
 function setProjectsToView() {
+    var noProjectsToDisplayErrorMessage = document.getElementById("noProjectsErrorMessage");
+    if(noProjectsToDisplayErrorMessage) {
+        noProjectsToDisplayErrorMessage.parentNode.removeChild(noProjectsToDisplayErrorMessage);
+    }
+
     if(this.projects.some(p => p)) {
         var orderedProjects = this.projects.sort(this.compare);
 
@@ -60,7 +65,7 @@ function setProjectsToView() {
     }
 
     var projectList = document.getElementById("project-list");
-    projectList.innerHTML = `<p class="text-center col-md-12">There are no projects to display</p>`;
+    projectList.innerHTML = `<p id="noProjectsErrorMessage" class="text-center col-md-12">There are no projects to display</p>`;
     this.setBuildSummaries();
     this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
 };
