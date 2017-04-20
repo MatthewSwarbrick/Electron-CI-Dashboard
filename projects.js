@@ -76,9 +76,16 @@ function setProjectsToView() {
 };
 
 function setBuildSummaries() {
-    var successfulBuildCount = this.projects.filter(p => p.status == "succeeded").length;
-    var queuedBuildCount = this.projects.filter(p => p.status == "building").length;
-    var failedBuildCount = this.projects.filter(p => p.status == "failed" || p.status == "canceled").length;
+    var ignoredProjectNames = TfsSettings.getIgnoredProjects();
+    if(!ignoredProjectNames) {
+        ignoredProjectNames = [];
+    }
+
+    var projectsToInclude = this.projects.filter(p => !ignoredProjectNames.some(ip => ip == p.name));
+
+    var successfulBuildCount = projectsToInclude.filter(p => p.status == "succeeded").length;
+    var queuedBuildCount = projectsToInclude.filter(p => p.status == "building").length;
+    var failedBuildCount = projectsToInclude.filter(p => p.status == "failed" || p.status == "canceled").length;
 
     var buildSummaryElement = document.getElementById("build-summary-text");
     buildSummaryElement.innerHTML = `
@@ -94,8 +101,15 @@ function subscribeToHideProjectButtonClickEvents() {
         closeButtonForProject.addEventListener('click', event => {
             event.preventDefault();
             TfsSettings.addProjectToIgnore(p.name);
+            this.hideProject(p.name);
+            this.setBuildSummaries();
         });
     });
+}
+
+function hideProject(projectName) {
+    var existingProjectElement = document.getElementById(projectName);
+    existingProjectElement.parentNode.removeChild(existingProjectElement);
 }
 
 function setSettingsButton() {

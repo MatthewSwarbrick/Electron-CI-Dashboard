@@ -18,6 +18,10 @@ var TfsSettings =  (function() {
             }
 
             localStorage.setItem("ignoredProjects", JSON.stringify(existingIgnoredProjects));
+        },
+
+        getIgnoredProjects: function() {
+            return JSON.parse(localStorage.getItem("ignoredProjects"));
         }
     }
 })();
