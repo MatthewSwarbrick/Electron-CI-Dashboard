@@ -44,7 +44,14 @@ function setProjectsToView() {
     }
 
     if(this.projects.some(p => p)) {
-        var orderedProjects = this.projects.sort(this.compare);
+        var ignoredProjectNames = TfsSettings.getIgnoredProjects();
+        if(!ignoredProjectNames) {
+            ignoredProjectNames = [];
+        }
+
+        var projectsToInclude = this.projects.filter(p => !ignoredProjectNames.some(ip => ip == p.name));
+
+        var orderedProjects = projectsToInclude.sort(this.compare);
 
         orderedProjects.forEach(op => {
             var existingProjectElement = document.getElementById(op.name);
@@ -64,8 +71,8 @@ function setProjectsToView() {
         });
 
         this.setBuildSummaries();
-        this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
-        this.subscribeToHideProjectButtonClickEvents();
+        this.previousBuildStatuses = projectsToInclude.map(p => { return { name: p.name, status: p.status} });
+        this.subscribeToHideProjectButtonClickEvents(projectsToInclude);
         return;
     }
 
@@ -95,8 +102,8 @@ function setBuildSummaries() {
     `;
 }
 
-function subscribeToHideProjectButtonClickEvents() {
-    this.projects.forEach(p => {
+function subscribeToHideProjectButtonClickEvents(projectsToBindTo) {
+    projectsToBindTo.forEach(p => {
         var closeButtonForProject = document.getElementById(`${p.name}-close`);
         closeButtonForProject.addEventListener('click', event => {
             event.preventDefault();
