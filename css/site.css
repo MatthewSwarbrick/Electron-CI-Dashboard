@@ -81,6 +81,29 @@
     text-decoration: none;
 }
 
+.show-build-link {
+    cursor: pointer;
+    color: #68217A !important;
+    text-decoration: none;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 2px solid #68217A;
+    border-radius: 5px;
+}
+
+.show-build-link:hover{
+    color: #fff !important;
+    text-decoration: none;
+    background-color: #68217A;
+}
+
+.show-build-link:focus{
+    color: #68217A !important;
+    text-decoration: none;
+}
+
 .faded-overlay {
     opacity:0.3;
     filter: alpha(opacity=20);
@@ -98,6 +121,14 @@
     top: 4px;
     right: 4px;
     cursor: pointer;
+}
+
+.hidden-project-element {
+    margin-left: 10px;
+}
+
+#hidden-projects {
+    margin-bottom: 20px;
 }
 
 #project-list {

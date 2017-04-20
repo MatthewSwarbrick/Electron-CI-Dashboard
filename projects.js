@@ -30,6 +30,15 @@ var projectHTML = (project) => `
             </div>
         </div>`;
 
+var hiddenProjectHTML = (projectName) => `
+    <div class="hidden-project-element">
+        <span>${projectName} </span> 
+        <a class="show-build-link">
+            <span>Show build <i class="fa fa-eye"></i><span>
+        </a>
+    </div>
+`;
+
 function setLastUpdatedToView() {
     var element = document.getElementById("last-updated-text");
     var lastUpdatedText = `Last updated at: ${moment().format("DD MMM HH:mm")}`;
@@ -44,14 +53,7 @@ function setProjectsToView() {
     }
 
     if(this.projects.some(p => p)) {
-        var ignoredProjectNames = TfsSettings.getIgnoredProjects();
-        if(!ignoredProjectNames) {
-            ignoredProjectNames = [];
-        }
-
-        var projectsToInclude = this.projects.filter(p => !ignoredProjectNames.some(ip => ip == p.name));
-
-        var orderedProjects = projectsToInclude.sort(this.compare);
+        var orderedProjects = this.projects.sort(this.compare);
 
         orderedProjects.forEach(op => {
             var existingProjectElement = document.getElementById(op.name);
@@ -59,8 +61,7 @@ function setProjectsToView() {
                 existingProjectElement.parentNode.replaceChild(document.createRange().createContextualFragment(projectHTML(op)), existingProjectElement);
             }
             else {
-                
-            var projectList = document.getElementById("project-list");
+                var projectList = document.getElementById("project-list");
                 projectList.appendChild(document.createRange().createContextualFragment(projectHTML(op)));
             }
 
@@ -71,8 +72,8 @@ function setProjectsToView() {
         });
 
         this.setBuildSummaries();
-        this.previousBuildStatuses = projectsToInclude.map(p => { return { name: p.name, status: p.status} });
-        this.subscribeToHideProjectButtonClickEvents(projectsToInclude);
+        this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
+        this.subscribeToHideProjectButtonClickEvents();
         return;
     }
 
@@ -102,8 +103,8 @@ function setBuildSummaries() {
     `;
 }
 
-function subscribeToHideProjectButtonClickEvents(projectsToBindTo) {
-    projectsToBindTo.forEach(p => {
+function subscribeToHideProjectButtonClickEvents() {
+    this.projects.forEach(p => {
         var closeButtonForProject = document.getElementById(`${p.name}-close`);
         closeButtonForProject.addEventListener('click', event => {
             event.preventDefault();
@@ -145,6 +146,13 @@ function isProjectBuildOlderThanAYear(queueTime) {
     return moment.duration(moment().diff(moment(queueTime))).asYears() > 1;
 };
 
+function displayHiddenProjects() {
+    TfsSettings.getIgnoredProjects().forEach(ip => {
+        var hiddenProjectList = document.getElementById("hidden-project-list");
+        hiddenProjectList.appendChild(document.createRange().createContextualFragment(hiddenProjectHTML(ip)));
+    });
+}
+
 function compare(a, b) {
   if (a.name.toLowerCase() < b.name.toLowerCase())
     return -1;
@@ -170,6 +178,11 @@ function getProjects() {
     this.projects = [];
     var parentPromises = [];
     var childPromises = [];
+    var ignoredProjects = TfsSettings.getIgnoredProjects();
+    if(!ignoredProjects) {
+        ignoredProjects = [];
+    }
+
     var tfsApiCall = TfsApi.getTfsProjects();
     tfsApiCall
     .then(response => response.json())
@@ -180,6 +193,10 @@ function getProjects() {
                 .then(response => response.json())
                 .then(json => {
                     json.value.forEach(function(definition) {
+                        if(ignoredProjects.some(ip => ip == project.name + " | " + definition.name)) {
+                            return;
+                        }
+
                         var deferred = Q.defer();
                         TfsApi.getQueuedBuildFromProject(project.name, definition.id)
                          .then(response => response.json())
@@ -239,6 +256,8 @@ function getProjects() {
 }
 
 this.getProjects();
+this.displayHiddenProjects();
+
 setInterval(this.getProjects, 30000);
 
 $(document).on('click', 'a[href^="http"]', function(event) {
