@@ -31,14 +31,16 @@ var projectHTML = (project) => `
         </div>`;
 
 var hiddenProjectHTML = (projectName) => `
-    <div class="cold-md-12 hidden-project-element">
-        <span>${projectName}</span>
-        <a class="show-build-link pull-right">
-            <span>Show build <i class="fa fa-eye"></i><span>
-        </a>
-    </div>
-    <div class="clearfix"></div>
-    <hr />
+    <div id="${projectName}-hidden-element">
+        <div class="hidden-project-element">
+            <span>${projectName}</span>
+            <a id="${projectName}-show" class="show-build-link pull-right">
+                <span>Show build <i class="fa fa-eye"></i><span>
+            </a>
+        </div>
+        <div class="clearfix"></div>
+        <hr />
+    <div>
 `;
 
 function setLastUpdatedToView() {
@@ -120,6 +122,26 @@ function subscribeToHideProjectButtonClickEvents() {
 function hideProject(projectName) {
     var existingProjectElement = document.getElementById(projectName);
     existingProjectElement.parentNode.removeChild(existingProjectElement);
+
+    this.addProjectToHiddenProjectList(projectName);
+}
+
+function addProjectToHiddenProjectList(projectName) {
+    var hiddenProjectList = document.getElementById("hidden-project-list");
+    hiddenProjectList.appendChild(document.createRange().createContextualFragment(hiddenProjectHTML(projectName)));
+
+    var showButtonForProject = document.getElementById(`${projectName}-show`);
+    showButtonForProject.addEventListener('click', event => {
+        event.preventDefault();
+        TfsSettings.removeProjectFromIgnoreList(projectName);
+        this.removeProjectFromHiddenProjects(projectName);
+        this.getProjects();
+    });
+}
+
+function removeProjectFromHiddenProjects(projectName) {
+    var existingProjectElement = document.getElementById(`${projectName}-hidden-element`);
+    existingProjectElement.parentNode.removeChild(existingProjectElement);
 }
 
 function setSettingsButton() {
@@ -150,8 +172,7 @@ function isProjectBuildOlderThanAYear(queueTime) {
 
 function displayHiddenProjects() {
     TfsSettings.getIgnoredProjects().forEach(ip => {
-        var hiddenProjectList = document.getElementById("hidden-project-list");
-        hiddenProjectList.appendChild(document.createRange().createContextualFragment(hiddenProjectHTML(ip)));
+        this.addProjectToHiddenProjectList(ip);
     });
 }
 
