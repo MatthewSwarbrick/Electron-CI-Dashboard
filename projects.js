@@ -31,12 +31,14 @@ var projectHTML = (project) => `
         </div>`;
 
 var hiddenProjectHTML = (projectName) => `
-    <div class="hidden-project-element">
-        <span>${projectName} </span> 
-        <a class="show-build-link">
+    <div class="cold-md-12 hidden-project-element">
+        <span>${projectName}</span>
+        <a class="show-build-link pull-right">
             <span>Show build <i class="fa fa-eye"></i><span>
         </a>
     </div>
+    <div class="clearfix"></div>
+    <hr />
 `;
 
 function setLastUpdatedToView() {
