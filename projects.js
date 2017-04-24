@@ -9,6 +9,7 @@ const Q = require("Q");
 const NProgress = require("nprogress");
 const $ = require("jquery");
 const Notifier = require("./notifier");
+const { ipcRenderer } = require('electron');
 
 var projects = [];
 var previousBuildStatuses = [];
@@ -105,6 +106,18 @@ function setBuildSummaries() {
         <span class="badge badge-warning">${queuedBuildCount} building</span>
         <span class="badge badge-danger">${failedBuildCount} failed build${failedBuildCount != 1 ? 's': ''}</span>
     `;
+
+    if(queuedBuildCount > 0) {
+        ipcRenderer.send("set-icon-orange");
+        return;
+    }
+
+    if(failedBuildCount > 0) {
+        ipcRenderer.send("set-icon-red");
+        return;
+    }
+
+    ipcRenderer.send("set-icon-green");
 }
 
 function subscribeToHideProjectButtonClickEvents() {

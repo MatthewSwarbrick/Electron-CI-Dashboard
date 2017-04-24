@@ -1,9 +1,10 @@
-const { app, BrowserWindow, session, Tray, Menu } = require('electron')
+const { app, BrowserWindow, session, ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
+const TrayHelper = require('./trayHelper');
 
-let win
-let appIcon = null;
+let win;
+let appIcon;
 
 function createWindow () {
   win = new BrowserWindow({width: 1000, height: 800, resizable: false});
@@ -20,12 +21,18 @@ function createWindow () {
     win = null
   })
 
-  appIcon = new Tray(path.join('content/images/vslogo-green.ico'));
-  const contextMenu = Menu.buildFromTemplate([
-    { label: 'Exit', type: 'normal', click() { app.quit() }}
-  ]);
-  appIcon.setToolTip('TFS CI Dashboard - all builds are passing');
-  appIcon.setContextMenu(contextMenu);
+  appIcon = TrayHelper.initialiseSystemTrayIcon(); 
+  ipcMain.on("set-icon-green", (event, arg) => {
+    TrayHelper.setTrayIconToPassed(appIcon);
+  });
+
+  ipcMain.on("set-icon-orange", (event, arg) => {
+    TrayHelper.setTrayIconToBuilding(appIcon);
+  });
+
+  ipcMain.on("set-icon-red", (event, arg) => {
+    TrayHelper.setTrayIconToFailed(appIcon);
+  });
 }
 
 app.on('ready', createWindow)
