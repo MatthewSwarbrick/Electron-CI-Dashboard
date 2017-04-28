@@ -7,7 +7,7 @@ let win;
 let appIcon;
 
 function createWindow () {
-  win = new BrowserWindow({width: 1000, height: 800, resizable: false});
+  win = new BrowserWindow({icon: 'content/images/vslogo-green-icon.ico', width: 1000, height: 800, resizable: false});
 
   // win.webContents.toggleDevTools();
 
