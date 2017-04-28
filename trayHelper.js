@@ -7,7 +7,7 @@ var TrayHelper =  (function() {
         initialiseSystemTrayIcon: function () {
             appIcon = new Tray(path.join('content/images/vslogo-green.ico'));
             const contextMenu = Menu.buildFromTemplate([
-                { label: 'Exit', type: 'normal', click() { app.quit() }}
+                { label: 'Exit', type: 'normal', click() { app.exit() }}
             ]);
             appIcon.setToolTip('TFS CI Dashboard - all builds are passing');
             appIcon.setContextMenu(contextMenu);
