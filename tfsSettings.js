@@ -29,7 +29,11 @@ var TfsSettings =  (function() {
         },
 
         getIgnoredProjects: function() {
-            return JSON.parse(localStorage.getItem("ignoredProjects"));
+            var ignoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
+            if(!ignoredProjects) {
+                ignoredProjects = [];
+            }
+            return ignoredProjects;
         }
     }
 })();
