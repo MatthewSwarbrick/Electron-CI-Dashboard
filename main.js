@@ -17,8 +17,13 @@ function createWindow () {
     slashes: true
   }))
 
+  win.on('close', (event) => {
+    event.preventDefault();
+    win.hide();
+  })
+
   win.on('closed', () => {
-    win = null
+    win = null;
   })
 
   appIcon = TrayHelper.initialiseSystemTrayIcon(); 
@@ -33,15 +38,13 @@ function createWindow () {
   ipcMain.on("set-icon-red", (event, arg) => {
     TrayHelper.setTrayIconToFailed(appIcon);
   });
+
+  appIcon.on('click', () => {
+    win.show();
+  })
 }
 
 app.on('ready', createWindow)
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
 
 app.on('activate', () => {
   if (win === null) {
