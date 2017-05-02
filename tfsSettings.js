@@ -6,6 +6,34 @@ var TfsSettings =  (function() {
 
         getTfsUrl: function() {
             return localStorage.getItem("tfsUrl");
+        },
+
+        addProjectToIgnore: function (name) {
+            var existingIgnoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
+            if(existingIgnoredProjects) {
+                existingIgnoredProjects.push(name);
+            }
+            else{
+                existingIgnoredProjects = [ name ];
+            }
+
+            localStorage.setItem("ignoredProjects", JSON.stringify(existingIgnoredProjects));
+        },
+
+        removeProjectFromIgnoreList: function (name) {
+            var existingIgnoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
+            var indexOfProjectToRemove = existingIgnoredProjects.findIndex(ip => ip == name);
+            existingIgnoredProjects.splice(indexOfProjectToRemove, 1);
+
+            localStorage.setItem("ignoredProjects", JSON.stringify(existingIgnoredProjects));
+        },
+
+        getIgnoredProjects: function() {
+            var ignoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
+            if(!ignoredProjects) {
+                ignoredProjects = [];
+            }
+            return ignoredProjects;
         }
     }
 })();
