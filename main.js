@@ -2,6 +2,7 @@ const { app, BrowserWindow, session, ipcMain } = require('electron')
 const path = require('path')
 const url = require('url')
 const TrayHelper = require('./trayHelper');
+require('electron-debug')({showDevTools: false, enabled: true});
 
 let win;
 let appIcon;
