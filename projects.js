@@ -48,7 +48,7 @@ function setLastUpdatedToView() {
     var element = document.getElementById("last-updated-text");
     var lastUpdatedText = `Last updated at: ${moment().format("DD MMM HH:mm")}`;
     element.innerHTML = lastUpdatedText;
-    this.removeLoadingOverlay();
+    NProgress.done();
 };
 
 function setProjectsToView() {
@@ -165,20 +165,6 @@ function setSettingsButton() {
     `;
 };
 
-function setLoadingOverlay() {
-    NProgress.start();
-    var overlayContainer = document.getElementById("loading-container");
-    overlayContainer.innerHTML = `
-        <div class="faded-overlay"></div>
-    `;
-}
-
-function removeLoadingOverlay() {
-    NProgress.done();
-    var overlayContainer = document.getElementById("loading-container");
-    overlayContainer.innerHTML = "";
-}
-
 function isProjectBuildOlderThanAYear(queueTime) {
     return moment.duration(moment().diff(moment(queueTime))).asYears() > 1;
 };
@@ -210,7 +196,7 @@ settingsButton.addEventListener("click", () => {
 });
 
 function getProjects() {
-    this.setLoadingOverlay();
+    NProgress.start();
     this.projects = [];
     var parentPromises = [];
     var childPromises = [];
