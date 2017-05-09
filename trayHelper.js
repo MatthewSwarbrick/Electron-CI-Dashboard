@@ -5,7 +5,7 @@ var TrayHelper =  (function() {
 
     return {
         initialiseSystemTrayIcon: function () {
-            appIcon = new Tray(path.join('content/images/vslogo-green.ico'));
+            appIcon = new Tray(path.join(__dirname, 'content/images/vslogo-green.ico'));
             const contextMenu = Menu.buildFromTemplate([
                 { label: 'Exit', type: 'normal', click() { app.exit() }}
             ]);
@@ -15,17 +15,17 @@ var TrayHelper =  (function() {
         },
         
         setTrayIconToBuilding: function (appIcon) {
-            appIcon.setImage(path.join('content/images/vslogo-orange.ico'));
+            appIcon.setImage(path.join(__dirname, 'content/images/vslogo-orange.ico'));
             appIcon.setToolTip('TFS CI Dashboard - building');
         },
 
         setTrayIconToPassed: function (appIcon) {
-            appIcon.setImage(path.join('content/images/vslogo-green.ico'));
+            appIcon.setImage(path.join(__dirname, 'content/images/vslogo-green.ico'));
             appIcon.setToolTip('TFS CI Dashboard - all builds are passing');
         },
 
         setTrayIconToFailed: function (appIcon) {
-            appIcon.setImage(path.join('content/images/vslogo-red.ico'));
+            appIcon.setImage(path.join(__dirname, 'content/images/vslogo-red.ico'));
             appIcon.setToolTip('TFS CI Dashboard - failed builds');
         },
     }
