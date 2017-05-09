@@ -8,32 +8,32 @@ var TfsSettings =  (function() {
             return localStorage.getItem("tfsUrl");
         },
 
-        addProjectToIgnore: function (name) {
-            var existingIgnoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
-            if(existingIgnoredProjects) {
-                existingIgnoredProjects.push(name);
+        addBuildToIgnore: function (name) {
+            var existingIgnoredBuilds = JSON.parse(localStorage.getItem("ignoredBuilds"));
+            if(existingIgnoredBuilds) {
+                existingIgnoredBuilds.push(name);
             }
             else{
-                existingIgnoredProjects = [ name ];
+                existingIgnoredBuilds = [ name ];
             }
 
-            localStorage.setItem("ignoredProjects", JSON.stringify(existingIgnoredProjects));
+            localStorage.setItem("ignoredBuilds", JSON.stringify(existingIgnoredBuilds));
         },
 
-        removeProjectFromIgnoreList: function (name) {
-            var existingIgnoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
-            var indexOfProjectToRemove = existingIgnoredProjects.findIndex(ip => ip == name);
-            existingIgnoredProjects.splice(indexOfProjectToRemove, 1);
+        removeBuildFromIgnoreList: function (name) {
+            var existingIgnoredBuilds = JSON.parse(localStorage.getItem("ignoredBuilds"));
+            var indexOfBuildToRemove = existingIgnoredBuilds.findIndex(ip => ip == name);
+            existingIgnoredBuilds.splice(indexOfBuildToRemove, 1);
 
-            localStorage.setItem("ignoredProjects", JSON.stringify(existingIgnoredProjects));
+            localStorage.setItem("ignoredBuilds", JSON.stringify(existingIgnoredBuilds));
         },
 
-        getIgnoredProjects: function() {
-            var ignoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
-            if(!ignoredProjects) {
-                ignoredProjects = [];
+        getIgnoredBuilds: function() {
+            var ignoredBuilds = JSON.parse(localStorage.getItem("ignoredBuilds"));
+            if(!ignoredBuilds) {
+                ignoredBuilds = [];
             }
-            return ignoredProjects;
+            return ignoredBuilds;
         }
     }
 })();

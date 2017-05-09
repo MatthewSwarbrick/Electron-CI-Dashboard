@@ -11,13 +11,13 @@
         window.Tether = require('tether');
     </script>
     <script type='text/javascript' src='node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
-    <title>TFS CI Dashboard | Your projects</title>
+    <title>TFS CI Dashboard | Your builds</title>
   </head>
   <body>
     <div id="loading-container">
     </div>
     <div class="header row">
-        <h1 class="col-sm-6 header-title">Your projects</h1>
+        <h1 class="col-sm-6 header-title">Your builds</h1>
         <div id="settings-button" class="col-sm-6 pull-right text-right">
         </div>
     </div>
@@ -27,18 +27,18 @@
       </div>
       <span id="last-updated-text" class="pull-right text-right col-sm-6 no-padding"></span>
     </div>
-    <div id="project-list" class="row">
+    <div id="build-list" class="row">
     </div>
     <hr />
-    <a class="configure-projects-link" data-toggle="collapse" href="#hidden-projects" aria-expanded="false" aria-controls="hidden-projects">
-      <span>Configure visible projects</span>
+    <a class="configure-builds-link" data-toggle="collapse" href="#hidden-builds" aria-expanded="false" aria-controls="hidden-builds">
+      <span>Configure visible builds</span>
       <i class="fa fa-plus"></i>
     </a>
-    <div class="collapse" id="hidden-projects">
+    <div class="collapse" id="hidden-builds">
       <hr />
-      <div id="hidden-project-list">
+      <div id="hidden-build-list">
       </div>
     </div>
   </body>
-  <script src="projects.js"></script>
+  <script src="builds.js"></script>
 </html>

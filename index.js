@@ -5,7 +5,7 @@ const url = require('url');
 
 if(TfsSettings.getTfsUrl())
 {
-    navigationToProjects();
+    navigationToBuilds();
 }
 
 var submitTfsButton = document.getElementById("enterTfsUrlButton");
@@ -16,12 +16,12 @@ submitTfsButton.addEventListener("click", () => {
     }
 
     TfsSettings.storeTfsUrl(tfsUrl);
-    navigationToProjects();
+    navigationToBuilds();
 });
 
-function navigationToProjects() {
+function navigationToBuilds() {
     remote.getCurrentWindow().loadURL(url.format({
-        pathname: path.join(__dirname, 'projects.html'),
+        pathname: path.join(__dirname, 'builds.html'),
         protocol: 'file:',
         slashes: true
     }));

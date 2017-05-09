@@ -11,31 +11,31 @@ const $ = require("jquery");
 const Notifier = require("./notifier");
 const { ipcRenderer } = require('electron');
 
-var projects = [];
+var builds = [];
 var previousBuildStatuses = [];
 
-var projectHTML = (project) => `
-        <div id="${project.name}" class="project col-sm-4">
-            <div class="card card-inverse ${project.status == 'building' ? 'card-warning building-card' : project.status == 'succeeded' ? 'card-success' : 'card-danger'}">
+var buildHTML = (build) => `
+        <div id="${build.name}" class="build col-sm-4">
+            <div class="card card-inverse ${build.status == 'building' ? 'card-warning building-card' : build.status == 'succeeded' ? 'card-success' : 'card-danger'}">
                 <div class="card-header">
-                    <span>${project.name}</span>
-                    <i id="${project.name}-close" class="fa fa-close project-close-icon"></i>
+                    <span>${build.name}</span>
+                    <i id="${build.name}-close" class="fa fa-close build-close-icon"></i>
                 </div>
                 <div class="card-block">
-                    <p class="card-text">Started by: ${project.requestedFor}</p>
-                    <p class="card-text">${moment(project.time).format("YYYY-MM-DD HH:mm")}</p>
-                    <a class="build-details-link" href="${project.link}">
+                    <p class="card-text">Started by: ${build.requestedFor}</p>
+                    <p class="card-text">${moment(build.time).format("YYYY-MM-DD HH:mm")}</p>
+                    <a class="build-details-link" href="${build.link}">
                         <span>View details <i class="fa fa-eye"></i><span>
                     </a>
                 </div>
             </div>
         </div>`;
 
-var hiddenProjectHTML = (projectName) => `
-    <div id="${projectName}-hidden-element">
-        <div class="hidden-project-element">
-            <span>${projectName}</span>
-            <a id="${projectName}-show" class="show-build-link pull-right">
+var hiddenBuildHTML = (buildName) => `
+    <div id="${buildName}-hidden-element">
+        <div class="hidden-build-element">
+            <span>${buildName}</span>
+            <a id="${buildName}-show" class="show-build-link pull-right">
                 <span>Show build <i class="fa fa-eye"></i><span>
             </a>
         </div>
@@ -51,23 +51,23 @@ function setLastUpdatedToView() {
     NProgress.done();
 };
 
-function setProjectsToView() {
-    var noProjectsToDisplayErrorMessage = document.getElementById("noProjectsErrorMessage");
-    if(noProjectsToDisplayErrorMessage) {
-        noProjectsToDisplayErrorMessage.parentNode.removeChild(noProjectsToDisplayErrorMessage);
+function setBuildsToView() {
+    var noBuildsToDisplayErrorMessage = document.getElementById("noBuildsErrorMessage");
+    if(noBuildsToDisplayErrorMessage) {
+        noBuildsToDisplayErrorMessage.parentNode.removeChild(noBuildsToDisplayErrorMessage);
     }
 
-    if(this.projects.some(p => p)) {
-        var orderedProjects = this.projects.sort(this.compare);
+    if(this.builds.some(p => p)) {
+        var orderedBuilds = this.builds.sort(this.compare);
 
-        orderedProjects.forEach(op => {
-            var existingProjectElement = document.getElementById(op.name);
-            if(existingProjectElement) {
-                existingProjectElement.parentNode.replaceChild(document.createRange().createContextualFragment(projectHTML(op)), existingProjectElement);
+        orderedBuilds.forEach(op => {
+            var existingBuildElement = document.getElementById(op.name);
+            if(existingBuildElement) {
+                existingBuildElement.parentNode.replaceChild(document.createRange().createContextualFragment(buildHTML(op)), existingBuildElement);
             }
             else {
-                var projectList = document.getElementById("project-list");
-                projectList.appendChild(document.createRange().createContextualFragment(projectHTML(op)));
+                var buildList = document.getElementById("build-list");
+                buildList.appendChild(document.createRange().createContextualFragment(buildHTML(op)));
             }
 
             var previousStatus = this.previousBuildStatuses.find(s => s.name == op.name);
@@ -77,28 +77,28 @@ function setProjectsToView() {
         });
 
         this.setBuildSummaries();
-        this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
-        this.subscribeToHideProjectButtonClickEvents();
+        this.previousBuildStatuses = this.builds.map(p => { return { name: p.name, status: p.status} });
+        this.subscribeToHideBuildButtonClickEvents();
         return;
     }
 
-    var projectList = document.getElementById("project-list");
-    projectList.innerHTML = `<p id="noProjectsErrorMessage" class="text-center col-md-12">There are no projects to display</p>`;
+    var buildList = document.getElementById("build-list");
+    buildList.innerHTML = `<p id="noBuildsErrorMessage" class="text-center col-md-12">There are no builds to display</p>`;
     this.setBuildSummaries();
-    this.previousBuildStatuses = this.projects.map(p => { return { name: p.name, status: p.status} });
+    this.previousBuildStatuses = this.builds.map(p => { return { name: p.name, status: p.status} });
 };
 
 function setBuildSummaries() {
-    var ignoredProjectNames = TfsSettings.getIgnoredProjects();
-    if(!ignoredProjectNames) {
-        ignoredProjectNames = [];
+    var ignoredBuildNames = TfsSettings.getIgnoredBuilds();
+    if(!ignoredBuildNames) {
+        ignoredBuildNames = [];
     }
 
-    var projectsToInclude = this.projects.filter(p => !ignoredProjectNames.some(ip => ip == p.name));
+    var buildsToInclude = this.builds.filter(p => !ignoredBuildNames.some(ip => ip == p.name));
 
-    var successfulBuildCount = projectsToInclude.filter(p => p.status == "succeeded").length;
-    var queuedBuildCount = projectsToInclude.filter(p => p.status == "building").length;
-    var failedBuildCount = projectsToInclude.filter(p => p.status == "failed" || p.status == "canceled").length;
+    var successfulBuildCount = buildsToInclude.filter(p => p.status == "succeeded").length;
+    var queuedBuildCount = buildsToInclude.filter(p => p.status == "building").length;
+    var failedBuildCount = buildsToInclude.filter(p => p.status == "failed" || p.status == "canceled").length;
 
     var buildSummaryElement = document.getElementById("build-summary-text");
     buildSummaryElement.innerHTML = `
@@ -120,41 +120,41 @@ function setBuildSummaries() {
     ipcRenderer.send("set-icon-green");
 }
 
-function subscribeToHideProjectButtonClickEvents() {
-    this.projects.forEach(p => {
-        var closeButtonForProject = document.getElementById(`${p.name}-close`);
-        closeButtonForProject.addEventListener('click', event => {
+function subscribeToHideBuildButtonClickEvents() {
+    this.builds.forEach(p => {
+        var closeButtonForBuild = document.getElementById(`${p.name}-close`);
+        closeButtonForBuild.addEventListener('click', event => {
             event.preventDefault();
-            TfsSettings.addProjectToIgnore(p.name);
-            this.hideProject(p.name);
+            TfsSettings.addBuildToIgnore(p.name);
+            this.hideBuild(p.name);
             this.setBuildSummaries();
         });
     });
 }
 
-function hideProject(projectName) {
-    var existingProjectElement = document.getElementById(projectName);
-    existingProjectElement.parentNode.removeChild(existingProjectElement);
+function hideBuild(buildName) {
+    var existingBuildElement = document.getElementById(buildName);
+    existingBuildElement.parentNode.removeChild(existingBuildElement);
 
-    this.addProjectToHiddenProjectList(projectName);
+    this.addBuildToHiddenBuildList(buildName);
 }
 
-function addProjectToHiddenProjectList(projectName) {
-    var hiddenProjectList = document.getElementById("hidden-project-list");
-    hiddenProjectList.appendChild(document.createRange().createContextualFragment(hiddenProjectHTML(projectName)));
+function addBuildToHiddenBuildList(buildName) {
+    var hiddenBuildList = document.getElementById("hidden-build-list");
+    hiddenBuildList.appendChild(document.createRange().createContextualFragment(hiddenBuildHTML(buildName)));
 
-    var showButtonForProject = document.getElementById(`${projectName}-show`);
-    showButtonForProject.addEventListener('click', event => {
+    var showButtonForBuild = document.getElementById(`${buildName}-show`);
+    showButtonForBuild.addEventListener('click', event => {
         event.preventDefault();
-        TfsSettings.removeProjectFromIgnoreList(projectName);
-        this.removeProjectFromHiddenProjects(projectName);
-        this.getProjects();
+        TfsSettings.removeBuildFromIgnoreList(buildName);
+        this.removeBuildFromHiddenBuilds(buildName);
+        this.getBuilds();
     });
 }
 
-function removeProjectFromHiddenProjects(projectName) {
-    var existingProjectElement = document.getElementById(`${projectName}-hidden-element`);
-    existingProjectElement.parentNode.removeChild(existingProjectElement);
+function removeBuildFromHiddenBuilds(buildName) {
+    var existingBuildElement = document.getElementById(`${buildName}-hidden-element`);
+    existingBuildElement.parentNode.removeChild(existingBuildElement);
 }
 
 function setSettingsButton() {
@@ -169,9 +169,9 @@ function isProjectBuildOlderThanAYear(queueTime) {
     return moment.duration(moment().diff(moment(queueTime))).asYears() > 1;
 };
 
-function displayHiddenProjects() {
-    TfsSettings.getIgnoredProjects().forEach(ip => {
-        this.addProjectToHiddenProjectList(ip);
+function displayHiddenBuilds() {
+    TfsSettings.getIgnoredBuilds().forEach(ip => {
+        this.addBuildToHiddenBuildList(ip);
     });
 }
 
@@ -195,14 +195,14 @@ settingsButton.addEventListener("click", () => {
     }));
 });
 
-function getProjects() {
+function getBuilds() {
     NProgress.start();
-    this.projects = [];
+    this.builds = [];
     var parentPromises = [];
     var childPromises = [];
-    var ignoredProjects = TfsSettings.getIgnoredProjects();
-    if(!ignoredProjects) {
-        ignoredProjects = [];
+    var ignoredBuilds = TfsSettings.getIgnoredBuilds();
+    if(!ignoredBuilds) {
+        ignoredBuilds = [];
     }
 
     var tfsApiCall = TfsApi.getTfsProjects();
@@ -215,7 +215,7 @@ function getProjects() {
                 .then(response => response.json())
                 .then(json => {
                     json.value.forEach(function(definition) {
-                        if(ignoredProjects.some(ip => ip == project.name + " | " + definition.name)) {
+                        if(ignoredBuilds.some(ip => ip == project.name + " | " + definition.name)) {
                             return;
                         }
 
@@ -226,7 +226,7 @@ function getProjects() {
                             if(json.count != 0)
                             {
                                 if(!this.isProjectBuildOlderThanAYear(json.value[0].queueTime)) {
-                                    this.projects.push({
+                                    this.builds.push({
                                         name: `${project.name} | ${definition.name}`,
                                         status: "building",
                                         requestedFor: json.value[0].requestedFor.displayName,
@@ -244,7 +244,7 @@ function getProjects() {
                                     if(json.count != 0)
                                     {
                                         if(!this.isProjectBuildOlderThanAYear(json.value[0].queueTime)) {
-                                            this.projects.push({
+                                            this.builds.push({
                                                 name: `${project.name} | ${definition.name}`,
                                                 status: json.value[0].result,
                                                 requestedFor: json.value[0].requestedFor.displayName,
@@ -268,19 +268,19 @@ function getProjects() {
     .then(() => {
         Q.all(parentPromises).then(() => {
             Q.all(childPromises).then(() => {
-                this.setProjectsToView();
+                this.setBuildsToView();
                 this.setLastUpdatedToView();
             });
         });
     });
 
-    tfsApiCall.catch(() => this.setProjectsToView());
+    tfsApiCall.catch(() => this.setBuildsToView());
 }
 
-this.getProjects();
-this.displayHiddenProjects();
+this.getBuilds();
+this.displayHiddenBuilds();
 
-setInterval(this.getProjects, 30000);
+setInterval(this.getBuilds, 30000);
 
 $(document).on('click', 'a[href^="http"]', function(event) {
         event.preventDefault();
