@@ -10,6 +10,10 @@
         window.$ = window.jQuery = require('jquery');
         window.Tether = require('tether');
     </script>
+    <script>
+        if(!window.exports) { exports = module.exports; }
+    </script>
+
     <script type='text/javascript' src='node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
     <title>TFS CI Dashboard | Your builds</title>
   </head>

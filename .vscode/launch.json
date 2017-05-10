@@ -16,7 +16,7 @@
             ],
             "env": {},
             "console": "externalTerminal",
-            "sourceMaps": false,
+            "sourceMaps": true,
             "outFiles": []
         },
         {
@@ -24,7 +24,7 @@
             "type": "node",
             "request": "attach",
             "port": 5858,
-            "sourceMaps": false,
+            "sourceMaps": true,
             "outFiles": []
         }
     ]
