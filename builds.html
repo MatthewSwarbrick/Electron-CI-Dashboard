@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="node_modules/nprogress/nprogress.css" rel="stylesheet"/>
+    <link href="node_modules/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <link href="css/site.css" rel="stylesheet">
+    <script>
+        window.$ = window.jQuery = require('jquery');
+        window.Tether = require('tether');
+    </script>
+    <script>
+        if(!window.exports) { exports = module.exports; }
+    </script>
+
+    <script type='text/javascript' src='node_modules/bootstrap/dist/js/bootstrap.min.js'></script>
+    <title>TFS CI Dashboard | Your builds</title>
+  </head>
+  <body>
+    <div id="loading-container">
+    </div>
+    <div class="header row">
+        <h1 class="col-sm-6 header-title">Your builds</h1>
+        <div id="settings-button" class="col-sm-6 pull-right text-right">
+        </div>
+    </div>
+    <hr />
+    <div class="build-summary row">
+      <div id="build-summary-text" class="col-sm-6 no-padding">
+      </div>
+      <span id="last-updated-text" class="pull-right text-right col-sm-6 no-padding"></span>
+    </div>
+    <div id="build-list" class="row">
+    </div>
+    <hr />
+    <a class="configure-builds-link" data-toggle="collapse" href="#hidden-builds" aria-expanded="false" aria-controls="hidden-builds">
+      <span>Configure visible builds</span>
+      <i class="fa fa-plus"></i>
+    </a>
+    <div class="collapse" id="hidden-builds">
+      <hr />
+      <div id="hidden-build-list">
+      </div>
+    </div>
+  </body>
+  <script src="builds.js"></script>
+</html>

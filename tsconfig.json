@@ -1,0 +1,27 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": 
+    {
+        "target": "es6",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noEmitOnError": true,
+        "removeComments": false,        
+        "sourceMap": true
+    },
+    "include": 
+    [
+        "**/*.ts",
+        "node_modules/@types/**/*.ts",
+        "node_modules/moment/moment.d.ts"
+    ],
+    "exclude":
+    [
+        "node_modules",
+        "**/*.js"
+    ]
+}

@@ -1,41 +1,36 @@
-var TfsSettings =  (function() {
-    return {
-        storeTfsUrl: function (url) {
-            localStorage.setItem("tfsUrl", url);
-        },
-
-        getTfsUrl: function() {
-            return localStorage.getItem("tfsUrl");
-        },
-
-        addProjectToIgnore: function (name) {
-            var existingIgnoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
-            if(existingIgnoredProjects) {
-                existingIgnoredProjects.push(name);
-            }
-            else{
-                existingIgnoredProjects = [ name ];
-            }
-
-            localStorage.setItem("ignoredProjects", JSON.stringify(existingIgnoredProjects));
-        },
-
-        removeProjectFromIgnoreList: function (name) {
-            var existingIgnoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
-            var indexOfProjectToRemove = existingIgnoredProjects.findIndex(ip => ip == name);
-            existingIgnoredProjects.splice(indexOfProjectToRemove, 1);
-
-            localStorage.setItem("ignoredProjects", JSON.stringify(existingIgnoredProjects));
-        },
-
-        getIgnoredProjects: function() {
-            var ignoredProjects = JSON.parse(localStorage.getItem("ignoredProjects"));
-            if(!ignoredProjects) {
-                ignoredProjects = [];
-            }
-            return ignoredProjects;
-        }
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class TfsSettings {
+    storeTfsUrl(url) {
+        localStorage.setItem("tfsUrl", url);
     }
-})();
-
-module.exports = TfsSettings;
+    getTfsUrl() {
+        return localStorage.getItem("tfsUrl");
+    }
+    addBuildToIgnore(name) {
+        var existingIgnoredBuilds = JSON.parse(localStorage.getItem("ignoredBuilds"));
+        if (existingIgnoredBuilds) {
+            existingIgnoredBuilds.push(name);
+        }
+        else {
+            existingIgnoredBuilds = [name];
+        }
+        localStorage.setItem("ignoredBuilds", JSON.stringify(existingIgnoredBuilds));
+    }
+    removeBuildFromIgnoreList(name) {
+        var existingIgnoredBuilds = JSON.parse(localStorage.getItem("ignoredBuilds"));
+        var indexOfBuildToRemove = existingIgnoredBuilds.findIndex((ip) => ip == name);
+        existingIgnoredBuilds.splice(indexOfBuildToRemove, 1);
+        localStorage.setItem("ignoredBuilds", JSON.stringify(existingIgnoredBuilds));
+    }
+    getIgnoredBuilds() {
+        var ignoredBuilds = JSON.parse(localStorage.getItem("ignoredBuilds"));
+        if (!ignoredBuilds) {
+            ignoredBuilds = [];
+        }
+        return ignoredBuilds;
+    }
+}
+;
+exports.default = new TfsSettings();
+//# sourceMappingURL=tfsSettings.js.map
